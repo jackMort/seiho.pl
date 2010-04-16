@@ -4,13 +4,27 @@ seiho.gym.App = function() {
 	return {
 		init: function() {
 			Ext.QuickTips.init();
-
+			
+			// mapowoania akcji ...
 			new Ext.KeyMap( document, {
 				alt: true,
 				key: Ext.EventObject.ENTER,
 				fn: this.login,
-				scope: this,
+				scope: this
 			});
+
+			// wyszukiwarka ...
+			this.searchField = new Ext.form.TextField({
+				renderTo: 'search',				
+				width: 200,
+				emptyText: 'wyszukaj w serwisie ...'
+			});
+
+			// panel centralny
+			this.centerPane = new Ext.Panel({
+				renderTo: 'center',
+				height: 400
+			})
 		},
 
 		login: function() {
