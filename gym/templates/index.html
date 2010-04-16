@@ -4,14 +4,78 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<meta name="Author" content="Lech Twaróg - lech.twarog@gmail.com" />
 
-		<script type="text/javascript" src="/media/js/ext/adapter/ext/ext-base.js"></script>
+		<!-- extjs -->
+		<link rel="stylesheet" type="text/css" href="/media/js/lib/ext-3.2.0/resources/css/ext-all.css" />
 
+		<script type="text/javascript" src="/media/js/lib/ext-3.2.0/adapter/ext/ext-base.js"></script>
+		<script type="text/javascript" src="/media/js/lib/ext-3.2.0/ext-all.js"></script>
+
+		<!-- logindialog -->
+        <link rel="stylesheet" type="text/css" href="/media/js/lib/logindialog/css/flags.css" />
+        <link rel="stylesheet" type="text/css" href="/media/js/lib/logindialog/css/virtualkeyboard.css" />
+
+        <script type="text/javascript" src="/media/js/lib/logindialog/js/virtualkeyboard.js"></script>
+        <script type="text/javascript" src="/media/js/lib/logindialog/js/plugins/virtualkeyboard.js"></script>
+        <script type="text/javascript" src="/media/js/lib/logindialog/js/Ext.ux.Crypto.SHA1.js"></script>
+        <script type="text/javascript" src="/media/js/lib/logindialog/js/Ext.ux.form.IconCombo.js"></script>
+        <script type="text/javascript" src="/media/js/lib/logindialog/js/Ext.ux.form.LoginDialog.js"></script>
+
+		<!-- application -->
 		<link rel="stylesheet" type="text/css" href="/media/css/base.css" />
 		<link rel="shortcut icon" href="/media/images/icons/asterisk_orange.png"/>
+		
+		<script type="text/javascript" src="/media/js/application.js"></script>
+
 
 		<title>{% block title %}Ewry Dej Hard Trejning{% endblock %}</title>
 	</head>
 	<body>
-
+		<div id="container">
+			<div id="header">
+				<h1><a href="/">Ewry Dej Hard Trejning</a></h1>
+				<div id="phone">
+					<p><a href="mailto:kontakt@seiho.pl">kontakt@seiho.pl</a></p>
+					<h6>Masz jakiś problem, napisz do nas</h6>
+				</div>
+			</div>
+			<div id="nav">
+				<ul>
+					<li class="active"><a href="#"><span>Główna</span></a></li>
+					<li><a href="#"><span>O nas</span></a></li>
+				</ul>
+			</div>
+			<div id="featured">
+				To jest test
+			</div>
+			<div id="content">
+				<div class="col">
+					<h2>About <span></span></h2>
+					<img src="/media/images/about_smashing_dzine.jpg" alt="About Smashing Dzine" />
+					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce ut dui nec nisl fringilla vestibulum vel vitae risus.</p>
+					<a href="#" class="readmore">Read More</a> </div>
+				<div class="col noMargin">
+					<h2>Our <span>Services</span></h2>
+					<img src="/media/images/about_smashing_dzine.jpg" alt="About Smashing Dzine" />
+					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce ut dui nec nisl fringilla vestibulum vel vitae risus.</p>
+					<a href="#" class="readmore">Read More</a> </div>
+				<div class="col no Margin fr">
+					<h2>Our <span>Portfolio</span></h2>
+					<img src="/media/images/about_smashing_dzine.jpg" alt="About Smashing Dzine" />
+					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce ut dui nec nisl fringilla vestibulum vel vitae risus.</p>
+					<a href="#" class="readmore">Read More</a> </div>
+			</div>
+			<div class="clear"></div>
+		</div>
+		<div id="footer">
+			<div id="footerContainer">
+				<p>Copyright © 2010 seiho.pl  |  <a href="#">Polityka Prywatności</a></p>
+				<p><a href="#">Główna</a> /  <a href="#">O nas</a>
+				<!--form id="newsletter" action="#" method="post">
+					<label>Enter your email to subscribe for  RSS Updates</label>
+					<input type="text" class="textBox" />
+					<input class="btn" type="image" src="/media/images/subscribe_btn.jpg"/>
+				</form-->
+			</div>
+		</div>
 	</body>
 </html>

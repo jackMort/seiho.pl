@@ -11,4 +11,5 @@ urlpatterns = patterns('',
     url(r'^/?$', 'django.views.generic.simple.direct_to_template', { 'template' : 'index.html' }, name='index' ),
 
     url(r'^exercises$', 'gym.exercises.views.index' ),
+    url(r'^json/login$', 'gym.views.ext_login' )
 )
