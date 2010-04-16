@@ -1,0 +1,7 @@
+<div class="exercises">
+	{% for exercise in exercises %}	
+	<div class="item">
+		<a href="#">{{ exercise.id }}, {{ exercise.name }}</a>
+	</div>
+	{% endfor %}
+</div>
