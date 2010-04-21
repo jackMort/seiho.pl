@@ -1,31 +1,19 @@
 /* CSS Reset */
 * { margin:0; padding:0; }
 body {
-	/*background: url(../images/body_bg.jpg) repeat-x 0px 0px;*/
+	background: #e5e5e5;
 	font-family: Arial, Helvetica, sans-serif;
 }
-#container {
-	width:960px;
-	margin:0 auto;
-	padding: 0 10px;
-}
-#header {
-	position:relative;
-	width: 100%;
-}
 #header h1 {
-	display:block;
-	float:left;
-	width:360px;
-	height:115px;
-	background:url(../images/logo.jpg) no-repeat 0 0;
-	text-indent:-9999px;
+	display: block;
+	float: left;
+	width: 360px;
+	height: 100px;
+	margin-left: 10px;
+	background: url(../images/logo.png) no-repeat 0 0;
+	text-indent: -9999px;
 }
-#header h1 a {
-	display:block;
-    height:100%;
-	width:100%;
-}
+
 #header #search {
 	height: 47px;
 	position: absolute;
@@ -34,18 +22,39 @@ body {
 	text-align:right;
 	padding: 5px 50px 0 0;
 }
-#center {
-	margin: 45px 0 0;
-	padding: 10px;
-	min-height: 340px;
-	width: 940px;
-	clear: both;
+.canvas-tl {
+	background: transparent url(../images/canvas/tl.png) no-repeat 0 0;
+	padding-left:10px;
 }
-#footer {
-	margin: 45px 0 0;
+.canvas-tr {
+	background: transparent url(../images/canvas/tr.png) no-repeat right 0;
+	padding-right:10px;
 }
-#footer .content {
-	padding: 10px;
-	text-align:right;
-	font-size: .8em;
+.canvas-tc {
+	background: transparent url(../images/canvas/t.png) repeat-x 0 0;
+	height:10px;
+}
+.canvas-ml {
+	background: transparent url(../images/canvas/l.png) repeat-y 0 0;
+	padding-left:10px;
+}
+.canvas-mr {
+	background: transparent url(../images/canvas/r.png) repeat-y right 0;
+	padding-right:10px;
+}
+.canvas-bl {
+	background: transparent url(../images/canvas/bl.png) no-repeat 0 0;
+	padding-left:10px;
+}
+.canvas-br {
+	background: transparent url(../images/canvas/br.png) no-repeat right 0;
+	padding-right:10px;
+}
+.canvas-bc {
+	background: transparent url(../images/canvas/b.png) repeat-x 0 0;
+	height:10px;
+}
+.canvas-body:not(.x-border-layout-ct) {
+	background    : white;
+	padding       : 5px;	
 }
