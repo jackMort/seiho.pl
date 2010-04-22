@@ -34,13 +34,22 @@ a:hover {
 
 #header #user .box {
 	float: right;
-	padding: 2px;
+	padding: 5px;
 	font-weight: bold;
 	min-width: 50px;
 }
 
-#header #user .user-name {
-	font-size: 1.1em;
+#header #user .user-name a {
+	font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
+	font-size: 11px;
+	color: #3B5998;
+}
+
+#header #user .user-profile a {
+	font-weight: normal;
+	font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
+	font-size: 11px;
+	color: #3B5998;
 }
 
 #header #user .logout {

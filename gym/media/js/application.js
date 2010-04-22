@@ -79,17 +79,19 @@ seiho.gym.MainPanel = Ext.extend( Ext.Panel, {
 		Ext.apply( this, {
 			frame: true,
 			baseCls: 'canvas',
-			layout: 'card',
-			activeItem: 0,
+			layout: 'fit',
 			items: [
-				new Seiho.gym.exercise.MainPanel()
+				new Ext.TabPanel({
+					activeItem: 0,
+					items: new Seiho.gym.exercise.MainPanel()
+				})
 			],
-			bbar: [
-				' ', { iconCls: 'icon-book_open', text: 'plany', pressed: true, toggleGroup: 'main-bar' },
-				{ iconCls: 'icon-delete', text: 'wyczyść', toggleGroup: 'main-bar' }, '-', 
-				{ iconCls: 'icon-application_osx_terminal', text: 'szablon', toggleGroup: 'main-bar' },
-				{ iconCls: 'icon-map', text: 'mapa', toggleGroup: 'main-bar', disabled: 'true' }, '->',
-				{ xtype: 'textfield', width: 200, emptyText: 'Wyszukaj w serwisie ...' },' '
+			gbar: [
+				' ', { iconCls: 'icon-book_open', text: 'dziennik treningowy', pressed: true, toggleGroup: 'main-bar' },
+				// { iconCls: 'icon-delete', text: 'wyczyść', toggleGroup: 'main-bar' }, '-', 
+				// { iconCls: 'icon-application_osx_terminal', text: 'szablon', toggleGroup: 'main-bar' },
+				// { iconCls: 'icon-map', text: 'mapa', toggleGroup: 'main-bar', disabled: 'true' }, 
+				'->', { xtype: 'textfield', width: 200, emptyText: 'Wyszukaj w serwisie ...' },' '
 			]
 		});
 		seiho.gym.MainPanel.superclass.initComponent.apply( this, arguments );
