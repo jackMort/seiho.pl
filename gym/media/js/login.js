@@ -29,6 +29,9 @@ seiho.gym.Login = function() {
 							this.loginDialog = undefined;
 						},
 						scope: this
+					},
+					success: function() {
+						location = '/'
 					}
 				}				
 			});

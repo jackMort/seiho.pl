@@ -13,13 +13,6 @@ seiho.gym.App = function() {
 				scope: this
 			});
 
-			// wyszukiwarka ...
-	//		this.searchField = new Ext.form.TextField({
-	//			renderTo: 'search',				
-	//			width: 200,
-	//			emptyText: 'wyszukaj w serwisie ...'
-	//		});
-
 			// panel centralny
 			var viewport = new Ext.Viewport({
 				layout: 'border',
@@ -67,6 +60,9 @@ seiho.gym.App = function() {
 							this.loginDialog = undefined;
 						},
 						scope: this
+					},
+					success: function() {
+						location = '/'
 					}
 				}				
 			});
@@ -83,32 +79,18 @@ seiho.gym.MainPanel = Ext.extend( Ext.Panel, {
 		Ext.apply( this, {
 			frame: true,
 			baseCls: 'canvas',
-			tbar: [
-				{
-					xtype: 'buttongroup',
-					title: 'Projekt',
-					defaults: {
-						iconAlign: 'top'
-					},
-					items: [
-						{ iconCls: 'icon-save', text: 'zapisz', scope: this },	
-						{ iconCls: 'icon-delete', text: 'wyczyść', scope: this },
-						{ iconCls: 'icon-application_osx_terminal', text: 'szablon', disabled: true },						
-						{ iconCls: 'icon-map', text: 'mapa', disabled: true }
-					]
-				},
-				{
-					xtype: 'buttongroup',
-					title: 'Edycja',
-					defaults: {
-						iconAlign: 'top'
-					},
-					items: [
-						{ iconCls: 'icon-arrow_turn_left', text: 'cofnij', disabled: true },	
-						{ iconCls: 'icon-arrow_turn_right', text: 'ponów', disabled: true }
-					]
-				}
-			]	
+			layout: 'card',
+			activeItem: 0,
+			items: [
+				new Seiho.gym.exercise.MainPanel()
+			],
+			bbar: [
+				' ', { iconCls: 'icon-book_open', text: 'plany', pressed: true, toggleGroup: 'main-bar' },
+				{ iconCls: 'icon-delete', text: 'wyczyść', toggleGroup: 'main-bar' }, '-', 
+				{ iconCls: 'icon-application_osx_terminal', text: 'szablon', toggleGroup: 'main-bar' },
+				{ iconCls: 'icon-map', text: 'mapa', toggleGroup: 'main-bar', disabled: 'true' }, '->',
+				{ xtype: 'textfield', width: 200, emptyText: 'Wyszukaj w serwisie ...' },' '
+			]
 		});
 		seiho.gym.MainPanel.superclass.initComponent.apply( this, arguments );
 	}

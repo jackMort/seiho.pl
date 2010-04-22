@@ -22,6 +22,7 @@
 <link rel="stylesheet" type="text/css" href="/media/css/icons.css" />
 <link rel="shortcut icon" href="/media/images/icons/asterisk_orange.png"/>
 
+<script type="text/javascript" src="/media/js/application.exercises.js"></script>
 <script type="text/javascript" src="/media/js/application.js"></script>
 {% endblock %}
 
@@ -33,7 +34,7 @@
 	<div id="user">
 		<div class="box">
 			<div class="user-name"><a href="/">{{ user }}</a></div>
-			<div class="logout"><a href="/logout">wyloguj</a></div>
+			<div class="logout"><a href="{% url logout %}">wyloguj</a></div>
 		</div>
 		<a href="/">
 			<img src="{% gravatar_url user.email 45 %}" width="45" height="45" alt="[ {{ user }} ]" style="border: 2px solid white">

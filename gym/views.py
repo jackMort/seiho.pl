@@ -1,14 +1,26 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.core.serializers.json import DjangoJSONEncoder
 from django.http import HttpResponse
 from django.template import RequestContext
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, redirect
 from django.utils import simplejson
+
+@login_required
+def index( request ):
+    return render_to_response(
+        "index.html", {}, context_instance = RequestContext( request )
+    )
 
 def login_user( request ):
     return render_to_response(
         "login.html", {}, context_instance = RequestContext( request )
     )
+
+@login_required
+def logout_user( request ):
+    logout( request )
+    return redirect( "/" )
 
 def ext_login( request ):
     json = {
