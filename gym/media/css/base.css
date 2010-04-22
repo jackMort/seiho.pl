@@ -4,6 +4,15 @@ body {
 	background: #e5e5e5;
 	font-family: Arial, Helvetica, sans-serif;
 }
+
+a {
+	text-decoration: none;
+	color: white;	
+}
+a:hover {
+	color: black;	
+}
+
 #header h1 {
 	display: block;
 	float: left;
@@ -14,14 +23,40 @@ body {
 	text-indent: -9999px;
 }
 
-#header #search {
-	height: 47px;
+#header #user {
+	height: 48px;
 	position: absolute;
-	top: 41px;
+	top: 5px;
 	right: 0;
-	text-align:right;
-	padding: 5px 50px 0 0;
+	padding: 5px 10px 0 0;
+	font-size: .9em;
 }
+
+#header #user .box {
+	float: right;
+	padding: 2px;
+	font-weight: bold;
+	min-width: 50px;
+}
+
+#header #user .user-name {
+	font-size: 1.1em;
+}
+
+#header #user .logout {
+	font-size: 0.7em;
+	text-align: right;
+}
+#header #user .logout a {
+	text-decoration: underline;
+	font-weight: normal;
+	color: red;
+}
+
+#header #user .logout a:hover {
+	color: black;
+}
+
 .canvas-tl {
 	background: transparent url(../images/canvas/tl.png) no-repeat 0 0;
 	padding-left:10px;

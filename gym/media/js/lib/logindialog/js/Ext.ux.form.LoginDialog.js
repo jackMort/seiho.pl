@@ -157,7 +157,7 @@ Ext.ux.form.LoginDialog = function (config) {
             xtype: 'box',
             autoEl: 'div',
             height: 10
-        }, {
+        },/* {
             xtype           : 'iconcombo',
             hiddenName      : this.languageField,
             fieldLabel      : this.languageLabel,
@@ -174,7 +174,7 @@ Ext.ux.form.LoginDialog = function (config) {
             triggerAction: 'all',
             editable: false,
             mode: 'local'
-        }, {
+        },*/ {
             xtype       : 'checkbox',
             id          : this._rememberMeId,
             name        : this.rememberMeField,
@@ -217,7 +217,7 @@ Ext.ux.form.LoginDialog = function (config) {
             width   : 90,
             handler : this.cancel,
             scale   : 'medium',
-            scope   : this
+			scope   : this
         });
         keys.push({
             key     : [27],
@@ -230,7 +230,7 @@ Ext.ux.form.LoginDialog = function (config) {
     // create the window
     this._window = new Ext.Window ({
         width       : 420,
-        height      : 280,
+        height      : 240,
         closable    : false,
         resizable   : false,
         draggable   : true,
@@ -241,7 +241,8 @@ Ext.ux.form.LoginDialog = function (config) {
         bodyStyle   : 'padding:5px;',
         buttons     : buttons,
         keys        : keys,
-        items       : [this._headPanel, this._formPanel]
+		items       : [this._headPanel, this._formPanel],
+		onEsc       : Ext.emptyFn
     });
 
     // when window is visible set focus to the username field
@@ -514,10 +515,10 @@ Ext.extend (Ext.ux.form.LoginDialog, Ext.util.Observable, {
     /**
      * Cancel the login (closes the dialog window)
      */
-    cancel : function () {
+	cancel : function () {
         if (this.fireEvent('cancel', this))
-        {
-            this.hide();
+		{
+			this._window.close();
         }
     },
 

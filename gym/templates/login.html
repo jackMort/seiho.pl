@@ -22,23 +22,14 @@
 <link rel="stylesheet" type="text/css" href="/media/css/icons.css" />
 <link rel="shortcut icon" href="/media/images/icons/asterisk_orange.png"/>
 
-<script type="text/javascript" src="/media/js/application.js"></script>
+<script type="text/javascript" src="/media/js/login.js"></script>
 {% endblock %}
+
+{% block title %}Logowanie do systemu{% endblock %}
 
 {% block body %}
 <div id="header">
 	<h1><a href="/">Ewry Dej Hard Trejning</a></h1>
-	{% if user.is_authenticated %}
-	{% load gravatar_tags %}
-	<div id="user">
-		<div class="box">
-			<div class="user-name"><a href="/">{{ user }}</a></div>
-			<div class="logout"><a href="/logout">wyloguj</a></div>
-		</div>
-		<a href="/">
-			<img src="{% gravatar_url user.email 45 %}" width="45" height="45" alt="[ {{ user }} ]" style="border: 2px solid white">
-		</a>
-	</div>
-	{% endif %}
+	<div id="search"></div>
 </div>
 {% endblock %}
