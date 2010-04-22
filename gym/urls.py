@@ -13,6 +13,6 @@ urlpatterns = patterns('',
     url(r'^exercises$', 'gym.exercises.views.index' ),
     
     # login logout ...                       
-    url(r'^login$', 'gym.views.login' ),
+    url(r'^login$', 'gym.views.login_user' ),
     url(r'^json/login$', 'gym.views.ext_login' )
 )

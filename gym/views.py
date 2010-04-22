@@ -5,7 +5,7 @@ from django.template import RequestContext
 from django.shortcuts import render_to_response
 from django.utils import simplejson
 
-def login( request ):
+def login_user( request ):
     return render_to_response(
         "login.html", {}, context_instance = RequestContext( request )
     )
@@ -18,7 +18,7 @@ def ext_login( request ):
     user = authenticate( username=request.POST['username'], password=request.POST['password'] )
     if user is not None:
         if user.is_active:
-            login( request )
+            login( request, user )
             json['success'] = True
         else:
             json['message'] = 'Account disabled contact with <a href="mailto:root@seiho.pl">admin</a> !'
