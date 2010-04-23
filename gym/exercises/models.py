@@ -1,51 +1,44 @@
 # -*- coding: utf-8 -*-
-
 from django.db import models
 from django.contrib.auth.models import User
 
 class Type( models.Model ):
+    parent = models.ForeignKey( 'self', blank=True, null=True )
     name = models.CharField( max_length=100 )
     description = models.TextField()
 
     def __str__( self ):
         return self.name
 
-class ExerciseDefinition( models.Model ):
+class Muscle( models.Model ):
+    name = models.CharField( max_length=100 )
+    description = models.TextField()
+
+    def __str__( self ):
+        return self.name
+
+class ExerciseTemplate( models.Model ):
     type = models.ForeignKey( Type )
+    muscles = models.ManyToManyField( Muscle, blank=True, null=True )
     name = models.CharField( max_length=100 )
     description = models.TextField()
 
     def __str__( self ):
         return self.name
 
-class Serie( models.Model ):
+class Set( models.Model ):
     number = models.IntegerField()
-    reps = models.IntegerField()
-    mass = models.FloatField()
-
-    def __str__( self ):
-        return "%d, %d, %f" % ( self.number, self.reps, self.mass )
+    reps = models.IntegerField( null=True )
+    mass = models.FloatField( null=True )
+    distance = models.FloatField( null=True )
+    time = models.TimeField( null=True )
 
 class Exercise( models.Model ):
-    exercise = models.ForeignKey( ExerciseDefinition )
-    series = models.ManyToManyField( Serie )
-    day = models.IntegerField()
+    template = models.ForeignKey( ExerciseTemplate )
+    sets = models.ManyToManyField( Set )
 
-    def __str__( self ):
-        return "%d" % ( self.day )
-
-class Session( models.Model ):
-    name = models.CharField( max_length=100 )
+class Training( models.Model ):
     user = models.ForeignKey( User )
+    date = models.DateTimeField()
     description = models.TextField()
-    exercise = models.ManyToManyField( Exercise )
-    start_date = models.DateTimeField()
-    end_date = models.DateTimeField()
-    
-    class Admin:
-        list_display = ( 'name', 'start_date', 'end_date', 'user' )
-        search_fields = ( 'name', 'start_date', 'end_date', 'user' )
-
-    class Meta:
-        ordering = ( '-start_date', )
-
+    exercises = models.ManyToManyField( Exercise )
