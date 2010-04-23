@@ -33,7 +33,15 @@
 	{% load gravatar_tags %}
 	<div id="user">
 		<div class="box">
-			<div class="user-name"><a href="/">{{ user.first_name }} {{ user.last_name }}</a></div>
+			<div class="user-name">
+				<a href="/">
+					{% if user.first_name %}
+						{{ user.first_name }} {{ user.last_name }}
+					{% else %}
+						{{ user }}
+					{% endif %}
+				</a>
+			</div>
 			<div class="user-profile"><a href="/">Zobacz mój profil</a></div>
 			<div class="logout"><a href="{% url logout %}">wyloguj</a></div>
 		</div>
