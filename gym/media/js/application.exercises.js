@@ -63,7 +63,7 @@ Seiho.gym.exercise.MainPanel = Ext.extend( Ext.grid.GridPanel, {
             groupField:'industry'
         });
 
-    Ext.apply( this, {
+		Ext.apply( this, {
         store: store,
         columns: [
             {id:'company',header: "Company", width: 60, sortable: true, dataIndex: 'company'},
@@ -81,14 +81,21 @@ Seiho.gym.exercise.MainPanel = Ext.extend( Ext.grid.GridPanel, {
         title: 'Dziennik treningowy',
         iconCls: 'icon-grid',
 		tbar: [
-			' ', { xtype: 'textfield', width: 200, emptyText: 'Wyszukaj w serwisie ...' },
-			'->', { iconCls: 'icon-book_open', text: 'dziennik treningowy', pressed: true, toggleGroup: 'main-bar' },
-			{ iconCls: 'icon-delete', text: 'wyczyść', toggleGroup: 'main-bar' }, '-', 
-			{ iconCls: 'icon-application_osx_terminal', text: 'szablon', toggleGroup: 'main-bar' },
-			{ iconCls: 'icon-map', text: 'mapa', toggleGroup: 'main-bar', disabled: 'true' }
+			' ', { xtype: 'textfield', width: 250, emptyText: 'Wyszukaj w dzienniku ...' },
+			'->', 
+			{ iconCls: 'icon-page_white', text: 'dodaj' }, '-', 
+			{ iconCls: 'icon-page_white_edit', text: 'edytuj', disabled: true },
+			{ iconCls: 'icon-delete', text: 'usuń', disabled: true },
+			' '
 		]
     });
 
 		Seiho.gym.exercise.MainPanel.superclass.initComponent.apply( this, arguments );
+	},
+	addExercise: function() {
+		// TODO implementacja
+	},
+	deleteExercise: function() {
+		// TODO implementacja
 	}
 });
