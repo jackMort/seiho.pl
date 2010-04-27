@@ -44,6 +44,31 @@ Seiho.gym.exercise.MainPanel = Ext.extend( Ext.grid.GridPanel, {
 
     var xg = Ext.grid;
 
+var experienceStore = new Ext.data.GroupingStore({
+	proxy: new Ext.data.DirectProxy({
+    //paramsAsHash: false,
+    directFn: django.exercises.list
+  }),
+  reader: new Ext.data.JsonReader({
+    root:'records',
+    idProperty:'description',
+    fields: [
+      {name: 'id'},
+      {name: 'name'},
+      {name: 'value'},
+      {name: 'description'}
+    ]
+  }),
+  listeners: {
+    load: function(s, records){
+      Ext.MessageBox.alert("Information", "Loaded " + records.length + " records");
+    }
+  }
+});
+
+experienceStore.load();
+
+
 
     // shared reader
     var reader = new Ext.data.ArrayReader({}, [

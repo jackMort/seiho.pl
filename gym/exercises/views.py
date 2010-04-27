@@ -1,10 +1,16 @@
+from gym.providers import remote_provider
 from gym.exercises.models import Exercise
-from django.template import RequestContext
-from django.shortcuts import render_to_response, get_object_or_404
+from extdirect.django import remoting, ExtDirectStore
 
-def index( request ):
-	exercises = Exercise.objects.all()
-	
-	return render_to_response(
-		"exercises/list.html", { "exercises": exercises }, context_instance = RequestContext( request )
-	)
+
+@remoting( remote_provider, action='exercises', len=1 )
+def list( request ):
+    extra = [
+        ( 'date', lambda obj: obj.training.date ),
+        ( 'template_name', lambda obj: obj.template.name ),
+    ]
+    
+    exercises = ExtDirectStore( Exercise, extra )
+    extdirect_data = request.extdirect_post_data[0]
+    
+    return exercises.query( **extdirect_data )
