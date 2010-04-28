@@ -41,4 +41,4 @@ class Training( models.Model ):
     user = models.ForeignKey( User )
     date = models.DateTimeField()
     description = models.TextField()
-    exercises = models.ManyToManyField( Exercise )
+    exercises = models.ManyToManyField( Exercise, related_name='training' )

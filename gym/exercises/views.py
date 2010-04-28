@@ -6,8 +6,9 @@ from extdirect.django import remoting, ExtDirectStore
 @remoting( remote_provider, action='exercises', len=1 )
 def list( request ):
     extra = [
-        ( 'date', lambda obj: obj.training.date ),
+        ( 'date', lambda obj: obj.training.all()[0].date ),
         ( 'template_name', lambda obj: obj.template.name ),
+        ( 'template_type', lambda obj: obj.template.type.name ),
     ]
     
     exercises = ExtDirectStore( Exercise, extra )
