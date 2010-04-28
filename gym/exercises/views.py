@@ -2,7 +2,6 @@ from gym.providers import remote_provider
 from gym.exercises.models import Exercise
 from extdirect.django import remoting, ExtDirectStore
 
-
 @remoting( remote_provider, action='exercises', len=1 )
 def list( request ):
     extra = [
@@ -13,5 +12,7 @@ def list( request ):
     
     exercises = ExtDirectStore( Exercise, extra )
     extdirect_data = request.extdirect_post_data[0]
+
+    extdirect_data['training__user__id'] = request.user.id
     
     return exercises.query( **extdirect_data )
