@@ -102,3 +102,33 @@ a:hover {
 	background    : white;
 	padding       : 5px;	
 }
+
+.round-corners {
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+}
+
+/** exercises **/
+.exercise-bodyrow {
+	padding: 5px;
+}
+.exercise-bodyrow .set {
+	background: green; 
+	color: white; 
+	text-align: right;
+	width: 150px;
+	padding: 3px; 
+	margin: 1px;
+}
+.exercise-bodyrow .set .number {
+	float: left;
+	color: green;
+	font-weight: bold;
+	background: white;
+	width: 25px;
+	text-align: center;
+}
+.exercise-bodyrow .set .biggest {
+	font-weight: bold;
+}
+

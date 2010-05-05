@@ -16,6 +16,7 @@ Seiho.gym.exercise.MainPanel = Ext.extend( Ext.grid.GridPanel, {
 					{name: 'id'},
 					{name: 'template_name'},
 					{name: 'template_type'},
+					{name: 'sets'},
 					{name: 'date', type: 'date', dateFormat: 'Y-m-d h:i:s'},
 				]
 			})
@@ -33,7 +34,27 @@ Seiho.gym.exercise.MainPanel = Ext.extend( Ext.grid.GridPanel, {
 				emptyText: 'Brak danych treningowych. Zacznij ćwiczyć ...',
 				forceFit:true,
 				hideGroupedColumn: true,
-				groupTextTpl: '{text} ({[values.rs.length]} {[values.rs.length > 1 ? "Elementów" : "Element"]})'
+				groupTextTpl: '{text} ({[values.rs.length]} {[values.rs.length > 1 ? "Elementów" : "Element"]})',
+				enableRowBody: true,
+				getRowClass: function( record, rowIndex, rp, ds ) {
+					var sets = Ext.util.JSON.decode( record.get( 'sets' ) );
+					// TODO: template
+					var items = '';
+					for( var i = 0, len = sets.length; i < len; i++ ) {
+						var mass = sets[i].fields.mass;
+						var time = sets[i].fields.time;
+						var reps = sets[i].fields.reps;
+						var number = sets[i].fields.number;
+						var distance = sets[i].fields.distance;
+
+						var info = ( reps > 0 ? '<span class="biggest">' + reps + '</span> x ' : '' ) + ( mass > 0 ? '<span class="biggest">' + mass + '</span> kg ' : '' )
+
+						items += '<div class="set round-corners"><span class="number round-corners">' + number + '</span> ' + info + '</div>'
+					}
+
+					rp.body = '<div class="exercise-bodyrow">' + items + '</div>'
+					return 'x-grid3-row-expanded'
+				}
 			}),
 			title: 'Dziennik treningowy',
 			iconCls: 'icon-grid',

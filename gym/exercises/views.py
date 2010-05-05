@@ -1,6 +1,7 @@
 from gym.providers import remote_provider
 from gym.exercises.models import Exercise
 from extdirect.django import remoting, ExtDirectStore
+from django.core import serializers
 
 @remoting( remote_provider, action='exercises', len=1 )
 def list( request ):
@@ -8,6 +9,7 @@ def list( request ):
         ( 'date', lambda obj: obj.training.all()[0].date ),
         ( 'template_name', lambda obj: obj.template.name ),
         ( 'template_type', lambda obj: obj.template.type.name ),
+        ( 'sets', lambda obj: serializers.serialize( 'json', obj.sets.all() ) )
     ]
     
     exercises = ExtDirectStore( Exercise, extra )
