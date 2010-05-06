@@ -85,7 +85,7 @@ Seiho.gym.exercise.MainPanel = Ext.extend( Ext.grid.GridPanel, {
 			tbar: [
 				' ', { xtype: 'textfield', width: 250, emptyText: 'Wyszukaj w dzienniku ...' },
 				'->', 
-				{ iconCls: 'icon-page_white', text: 'dodaj' }, '-', 
+				{ iconCls: 'icon-page_white', text: 'dodaj', handler: this.addExercise, scope: this }, '-', 
 				{ iconCls: 'icon-page_white_edit', text: 'edytuj', disabled: true },
 				{ iconCls: 'icon-delete', text: 'usuń', disabled: true },
 				'-',
@@ -106,9 +106,160 @@ Seiho.gym.exercise.MainPanel = Ext.extend( Ext.grid.GridPanel, {
 		view.refresh();
 	},
 	addExercise: function() {
-		// TODO implementacja
+		if( this.window ) {
+            this.window.toFront();
+			this.window.getEl().frame();
+
+            return false;
+        }
+
+        var form = new Seiho.gym.exercise.TrainingWizard({
+            listeners: {
+                validate: {
+                    fn: function (form, valid, item, items_len) {
+                        // set disabled when not valid or not last
+                        this.window.buttons[2].setDisabled(!valid || !(item == items_len));
+                    },
+                    scope: this
+                }
+            }
+        });
+
+        this.window = new Seiho.Window({
+            form: form,
+            // ..
+            title: 'Nowy Trening ...',
+            iconCls: 'icon-page_white',
+            width: 750,
+            height: 470,
+            layout: 'fit',
+            items: form,
+            listeners: {
+                close: {
+                    fn: function () {
+                        this.window = undefined;
+                    },
+                    scope: this
+                }
+            },
+            buttons: [
+            	form.prevPanelAction, form.nextPanelAction, {
+                	text: 'Zapisz',
+	                iconCls: 'icon-save',
+    	            //handler: this.saveTerm.createDelegate( this )
+	            },
+    	        {
+        	        text: 'Anuluj',
+	                iconCls: 'icon-delete',
+    	            handler: function () {
+        	            this.window.close()
+            	    },
+                	scope: this
+	            }]
+        });
+        this.window.show();
 	},
 	deleteExercise: function() {
 		// TODO implementacja
 	}
 });
+
+Seiho.gym.exercise.TrainingWizard = Ext.extend( Seiho.wizard.BaseWizard, { //{{{
+    initComponent: function () {
+        Ext.apply(this, {
+            items: [
+	            new Seiho.gym.exercise.TrainingWizard.BaseInfo({
+				    wizard: this
+				}),
+	            new Seiho.gym.exercise.TrainingWizard.BaseInfo({
+				    wizard: this
+			    }),
+			]
+        });
+        Seiho.gym.exercise.TrainingWizard.superclass.initComponent.apply(this, arguments);
+    }
+});
+//}}}
+Seiho.gym.exercise.TrainingWizard.BaseInfo = Ext.extend( Seiho.wizard.Item, { //{{{
+    startDate: new Date().clearTime(),
+    stepName: 'Podstawowe dane o treningu',
+    stepRawName: 'base_info',
+    stepDescription: 'Uzupełnij podstawowe dane o treningu.',
+    initComponent: function () {
+
+        this.nameField = new Ext.form.TextField({
+			name: 'name',
+			flex: 1,
+			allowBlank: false,
+            value: 'Ćwiczenia na przedłużenie członka ' + new Date().format('Y-m-d H:i:s'),
+            listeners: {
+                blur: this.validate.createDelegate(this)
+            }
+		});
+ 
+		this.dateField = new Ext.form.DateField({
+            name: 'date',
+			allowBlank: false,
+            value: this.startDate,
+            listeners: {
+                blur: this.validate.createDelegate(this)
+            }
+		});
+	
+		this.privateField = new Ext.form.Checkbox({
+			name: 'private',
+			fieldLabel: 'Prywatny',
+			allowBlank: false,
+			anchor: '100%'
+        });
+
+		this.baseElement = new Ext.FormPanel({
+			autoScroll: true,
+            border: false,
+            bodyStyle: 'padding:25px 20px 0px 20px',
+            //margins: '3 3 3 3',
+            items: [{
+                xtype: 'fieldset',
+                title: 'Dane ewidencyjne',
+                autoHeight: true,
+				items: [
+					{
+						xtype: 'compositefield',
+						fieldLabel: 'Nazwa, Data',
+						anchor: '-10px',
+						items: [
+							this.nameField,
+							this.dateField
+						]
+					},
+					this.privateField
+				]
+            },{
+                xtype: 'fieldset',
+                title: 'Opis, Uwagi',
+                autoHeight: true,
+                layout: 'fit',
+                items: {
+                    xtype: 'textarea',
+                    name: 'description',
+                    height: 200,
+                    hideLabel: true,
+                    listeners: {
+                        blur: this.validate.createDelegate( this )
+                    }
+                }
+            }]
+        });
+        Seiho.gym.exercise.TrainingWizard.BaseInfo.superclass.initComponent.apply( this, arguments );
+    },
+
+    isValid: function () {
+        return this.baseElement.getForm().isValid()
+    },
+
+    getValues: function () {
+        return this.baseElement.getForm().getValues();
+    }
+
+});
+//}}}
