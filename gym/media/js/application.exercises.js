@@ -24,9 +24,30 @@ Seiho.gym.exercise.MainPanel = Ext.extend( Ext.grid.GridPanel, {
 
 		Ext.apply( this, {
 			store: experienceStore,
+			loadMask: { msg: 'Czekaj <b>koksie</b>, trwa wczytywanie twoich treningów ...'},
 			columns: [
-				{id:'tn',header: "Nazwa", width: 60, sortable: true, dataIndex: 'template_name'},
-				{header: "Typ", width: 20, sortable: true, dataIndex: 'template_type'},
+				{
+					id:'tn',
+					header: "Nazwa", 
+					sortable: true, 
+					dataIndex: 'template_name',  
+					renderer: function( v ) {
+						// TODO wygląd
+						return v
+					}
+				},
+				{header: "Typ", width: 20, sortable: true, dataIndex: 'template_type', align: 'center' },				
+				{
+					header: "Serie", 
+					width: 5, 
+					sortable: true, 
+					dataIndex: 'sets',
+					align: 'center',
+					renderer: function( v ) { 
+						var sets = Ext.util.JSON.decode( v );
+						return '<div class="round-corners" style="background: #cccccc; font-weight: bold; color: white">' + sets.length + '</div>'
+					}
+				},
 				{header: "Data", width: 20, sortable: true, renderer: Ext.util.Format.dateRenderer('Y-m-d'), dataIndex: 'date'}
 			],
 
@@ -74,8 +95,10 @@ Seiho.gym.exercise.MainPanel = Ext.extend( Ext.grid.GridPanel, {
 		});
 
 		Seiho.gym.exercise.MainPanel.superclass.initComponent.apply( this, arguments );
-
-		experienceStore.load()
+		
+		this.on( 'render', function() {
+			experienceStore.load()			
+		}, this, { delay: 100 } );
 	},
 	toggleSeries: function( btn, pressed ) {
 		var view = this.getView();

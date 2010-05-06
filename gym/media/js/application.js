@@ -86,6 +86,7 @@ seiho.gym.App = function() {
 				layout: 'fit',
 				iconCls: 'icon-map',
 				title: 'Twoja lokalizacja',
+				modal: true,
 				width: 600,
 				height: 200,
 				x: e.getXY()[0] - 600,
