@@ -1,5 +1,5 @@
 from gym.providers import remote_provider
-from gym.exercises.models import Exercise
+from gym.exercises.models import Exercise, ExerciseTemplate, Type
 from extdirect.django import remoting, ExtDirectStore
 from django.core import serializers
 
@@ -18,3 +18,30 @@ def list( request ):
     extdirect_data['training__user__id'] = request.user.id
     
     return exercises.query( **extdirect_data )
+
+@remoting( remote_provider, action='templates', len=1 )
+def tree( request ):
+    result = []
+    for t in Type.objects.all():
+        children = []
+        for e in ExerciseTemplate.objects.filter( type__exact=t ):
+            children.append(
+                {
+                    'id': e.id,
+                    'text': e.name,
+                    'leaf': True
+                }
+            )
+
+        result.append(
+            {
+                'id': 'c_%d' % t.id,
+               'text': t.name,
+                'children': children,
+                'leaf': len( children ) == 0,
+                'expanded': True
+            }
+        )
+    
+    return result
+

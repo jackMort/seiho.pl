@@ -171,7 +171,7 @@ Seiho.gym.exercise.TrainingWizard = Ext.extend( Seiho.wizard.BaseWizard, { //{{{
 	            new Seiho.gym.exercise.TrainingWizard.BaseInfo({
 				    wizard: this
 				}),
-	            new Seiho.gym.exercise.TrainingWizard.BaseInfo({
+	            new Seiho.gym.exercise.TrainingWizard.Exercises({
 				    wizard: this
 			    }),
 			]
@@ -263,3 +263,66 @@ Seiho.gym.exercise.TrainingWizard.BaseInfo = Ext.extend( Seiho.wizard.Item, { //
 
 });
 //}}}
+Seiho.gym.exercise.TrainingWizard.Exercises = Ext.extend( Seiho.wizard.Item, { //{{{
+    stepName: 'Ćwiczenia w sesji treningowej',
+    stepRawName: 'exercises',
+    stepDescription: 'Wybierz ćwiczenia wykonane w tej sesji treningowej.',
+    initComponent: function () {
+	
+		this.baseElement = new Ext.Panel({
+			border: false,
+			layout: 'border',
+			bodyStyle: 'background: white', 
+			items: [
+				{
+					region: 'center',
+					margins: '1 1 1 1'
+				}, new Seiho.gym.exercise.TrainingWizard.Exercises.Toolbox({
+					region: 'west',
+					width: 150,
+					margins: '1 1 1 1'
+				})
+			]
+        });
+        Seiho.gym.exercise.TrainingWizard.Exercises.superclass.initComponent.apply( this, arguments );
+    },
+
+    isValid: function () {
+        return false
+    },
+
+    getValues: function () {
+        return []
+    }
+
+});
+//}}}
+
+Seiho.gym.exercise.TrainingWizard.Exercises.Toolbox = Ext.extend( Ext.tree.TreePanel, {
+	rootVisible: false,
+	autoScroll: true,
+	useArrows: true,
+	enableDrag: true,
+	collapseFirst: false,
+	trackMouseOver: false,
+	ddGroup: 'designer-canvas',
+	initComponent: function() {
+		this.loader = new Ext.tree.TreeLoader({
+			directFn: django.templates.tree
+		});
+		this.root = {
+			id: "troot",
+			async: true,
+			expanded: true,
+			text: "troot"
+		};
+
+		Seiho.gym.exercise.TrainingWizard.Exercises.Toolbox.superclass.initComponent.call( this );
+		this.getSelectionModel().on( 'beforeselect', function( a, b ) {
+			if( b && !b.isLeaf() ) {
+				b.toggle();
+				return false
+			}
+		});
+	}
+});
