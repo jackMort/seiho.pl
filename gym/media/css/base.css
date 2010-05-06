@@ -111,22 +111,34 @@ a:hover {
 /** exercises **/
 .exercise-bodyrow {
 	padding: 5px;
+	padding-bottom: 25px;
 }
 .exercise-bodyrow .set {
-	background: green; 
+	float: left;
+	background: #3B5998;
 	color: white; 
 	text-align: right;
-	width: 150px;
-	padding: 3px; 
-	margin: 1px;
+	min-width: 100px;
+	padding: 3px;
+	margin: 2px;
+	box-shadow: 2px 2px 2px #888;
+	-moz-box-shadow: 2px 2px 2px #888;
+	-webkit-box-shadow: 2px 2px 2px #888;
+	/*text-shadow: 1px 1px 1px #000;*/
+}
+.exercise-bodyrow .set:hover {
+	box-shadow: 3px 3px 3px #888;
+	-moz-box-shadow: 3px 3px 3px #888;
+	-webkit-box-shadow: 3px 3px 3px #888;
 }
 .exercise-bodyrow .set .number {
 	float: left;
-	color: green;
 	font-weight: bold;
+	color: #3B5998;
 	background: white;
 	width: 25px;
 	text-align: center;
+	margin-right: 10px;
 }
 .exercise-bodyrow .set .biggest {
 	font-weight: bold;

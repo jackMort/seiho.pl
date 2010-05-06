@@ -48,7 +48,7 @@ Seiho.gym.exercise.MainPanel = Ext.extend( Ext.grid.GridPanel, {
 						return '<div class="round-corners" style="background: #cccccc; font-weight: bold; color: white">' + sets.length + '</div>'
 					}
 				},
-				{header: "Data", width: 20, sortable: true, renderer: Ext.util.Format.dateRenderer('Y-m-d'), dataIndex: 'date'}
+				{header: "Data", width: 20, align: 'center', sortable: true, renderer: Ext.util.Format.dateRenderer( 'l, j F Y' ), dataIndex: 'date'}
 			],
 
 			view: new Ext.grid.GroupingView({
