@@ -145,7 +145,10 @@ seiho.gym.MainPanel = Ext.extend( Ext.Panel, {
 			items: [
 				new Ext.TabPanel({
 					activeItem: 0,
-					items: new Seiho.gym.exercise.MainPanel()
+					items: [
+						new Seiho.gym.exercise.MainPanel(),
+						new Seiho.gym.profile.MainPanel()
+					]
 				})
 			],
 			gbar: [

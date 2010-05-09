@@ -274,12 +274,13 @@ Seiho.gym.exercise.TrainingWizard.Exercises = Ext.extend( Seiho.wizard.Item, { /
 			layout: 'border',
 			bodyStyle: 'background: white', 
 			items: [
-				{
+				new Seiho.gym.exercise.TrainingWizard.Exercises.DropPanel({
 					region: 'center',
 					margins: '1 1 1 1'
-				}, new Seiho.gym.exercise.TrainingWizard.Exercises.Toolbox({
+				}), new Seiho.gym.exercise.TrainingWizard.Exercises.Toolbox({
 					region: 'west',
 					width: 150,
+					border: false,
 					margins: '1 1 1 1'
 				})
 			]
@@ -326,3 +327,52 @@ Seiho.gym.exercise.TrainingWizard.Exercises.Toolbox = Ext.extend( Ext.tree.TreeP
 		});
 	}
 });
+
+Seiho.gym.exercise.TrainingWizard.Exercises.DropPanel = Ext.extend( Ext.Panel, {
+	html: 'ad',
+	tpl: new Ext.XTemplate(
+		'<tpl for=".">',
+			'<div class="exercise round-corners" style="margin: 3px; background: #eee; padding: 2px;height: 50px;">',
+				'<div class="exercise-name" style="padding: 2px; font-weight: bold; color: white; font-size:1.3em;text-shadow: 2px 2px 2px #888;">{name}</div>',
+				'<div class="exercise-series">',
+					'<tpl for="series">',
+						'<div class="set round-corners"><span class="number round-corners">{[xindex]}</span>5 x 100m</div>',
+					'</tpl>',
+				'</div>',
+			'</div>',
+		'</tpl>'
+	),
+	initComponent: function() {
+		Seiho.gym.exercise.TrainingWizard.Exercises.DropPanel.superclass.initComponent.apply( this, arguments )
+		this.on( 'render', function() {
+			var self = this;
+			this.dropZone = new Ext.dd.DropTarget( this.body.dom, {
+				ddGroup: 'designer-canvas',
+				notifyDrop: function( ddSource, e, data ) {
+					self.addExercise( data.node )
+		
+					return true
+				}
+			})
+		}, this )
+	},
+	addExercise: function( node ) {
+		data = [
+			{
+				name: 'Bieganie',
+				series: [
+					{ name: '1'}
+				]
+			},{
+				name: 'Pompki Klasyczne',
+				series: [
+					{ name: '1'},
+					{ name: '2'},
+					{ name: '3'},
+				]
+			}
+		]
+
+		this.tpl.overwrite( this.body, data )
+	}
+})

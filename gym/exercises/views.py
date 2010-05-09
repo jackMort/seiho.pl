@@ -36,10 +36,11 @@ def tree( request ):
         result.append(
             {
                 'id': 'c_%d' % t.id,
-               'text': t.name,
+                'text': t.name,
                 'children': children,
                 'leaf': len( children ) == 0,
-                'expanded': True
+                'expanded': True,
+                'draggable': False
             }
         )
     

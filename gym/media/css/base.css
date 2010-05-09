@@ -113,7 +113,7 @@ a:hover {
 	padding: 5px;
 	padding-bottom: 25px;
 }
-.exercise-bodyrow .set {
+.set {
 	float: left;
 	background: #3B5998;
 	color: white; 
@@ -126,12 +126,12 @@ a:hover {
 	-webkit-box-shadow: 2px 2px 2px #888;
 	/*text-shadow: 1px 1px 1px #000;*/
 }
-.exercise-bodyrow .set:hover {
+.set:hover {
 	box-shadow: 3px 3px 3px #888;
 	-moz-box-shadow: 3px 3px 3px #888;
 	-webkit-box-shadow: 3px 3px 3px #888;
 }
-.exercise-bodyrow .set .number {
+.set .number {
 	float: left;
 	font-weight: bold;
 	color: #3B5998;
@@ -140,7 +140,7 @@ a:hover {
 	text-align: center;
 	margin-right: 10px;
 }
-.exercise-bodyrow .set .biggest {
+.set .biggest {
 	font-weight: bold;
 }
 
