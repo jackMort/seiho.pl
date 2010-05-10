@@ -329,11 +329,14 @@ Seiho.gym.exercise.TrainingWizard.Exercises.Toolbox = Ext.extend( Ext.tree.TreeP
 });
 
 Seiho.gym.exercise.TrainingWizard.Exercises.DropPanel = Ext.extend( Ext.Panel, {
-	html: 'ad',
+	baseCls: 'canvas',
+	frame: true,
+	// TODO: wszystko do css'a
+	html: '<div class="emtpy-message" style="text-align: center;padding:10px; margin-top: 30px; color: #999999;font-size: 1.3em">Dodaj ćwiczenia przeciągając je z panelu po lewej stronie ...</div>',
 	tpl: new Ext.XTemplate(
 		'<tpl for=".">',
-			'<div class="exercise round-corners" style="margin: 3px; background: #eee; padding: 2px;height: 50px;">',
-				'<div class="exercise-name" style="padding: 2px; font-weight: bold; color: white; font-size:1.3em;text-shadow: 2px 2px 2px #888;">{name}</div>',
+			'<div class="exercise round-corners" style="margin: 5px; background: #eee; padding: 2px;height: 50px; -moz-box-shadow: 2px 2px 2px #ccc;">',
+				'<div class="exercise-name" style="padding: 2px; font-weight: bold; color: white; font-size:1.3em; text-shadow: 2px 2px 2px #888;">{[xindex]}. {text}</div>',
 				'<div class="exercise-series">',
 					'<tpl for="series">',
 						'<div class="set round-corners"><span class="number round-corners">{[xindex]}</span>5 x 100m</div>',
@@ -343,7 +346,12 @@ Seiho.gym.exercise.TrainingWizard.Exercises.DropPanel = Ext.extend( Ext.Panel, {
 		'</tpl>'
 	),
 	initComponent: function() {
+		this.exercises = new Ext.util.MixedCollection( false, function( e ) {
+			return e.id
+		});
+
 		Seiho.gym.exercise.TrainingWizard.Exercises.DropPanel.superclass.initComponent.apply( this, arguments )
+		
 		this.on( 'render', function() {
 			var self = this;
 			this.dropZone = new Ext.dd.DropTarget( this.body.dom, {
@@ -357,22 +365,12 @@ Seiho.gym.exercise.TrainingWizard.Exercises.DropPanel = Ext.extend( Ext.Panel, {
 		}, this )
 	},
 	addExercise: function( node ) {
-		data = [
-			{
-				name: 'Bieganie',
-				series: [
-					{ name: '1'}
-				]
-			},{
-				name: 'Pompki Klasyczne',
-				series: [
-					{ name: '1'},
-					{ name: '2'},
-					{ name: '3'},
-				]
-			}
-		]
+		this.exercises.add({
+			id: node.attributes.id,
+			text: node.attributes.text,
+			series: []
+		});
 
-		this.tpl.overwrite( this.body, data )
+		this.tpl.overwrite( this.body, this.exercises.items )
 	}
 })
