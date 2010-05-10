@@ -129,9 +129,9 @@ Seiho.gym.exercise.MainPanel = Ext.extend( Ext.grid.GridPanel, {
             form: form,
             // ..
             title: 'Nowy Trening ...',
-            iconCls: 'icon-page_white',
-            width: 750,
-            height: 470,
+			iconCls: 'icon-page_white',
+            maxWidth: 800,
+            maxHeight: 500,
             layout: 'fit',
             items: form,
             listeners: {
@@ -268,33 +268,71 @@ Seiho.gym.exercise.TrainingWizard.Exercises = Ext.extend( Seiho.wizard.Item, { /
     stepRawName: 'exercises',
     stepDescription: 'Wybierz ćwiczenia wykonane w tej sesji treningowej.',
     initComponent: function () {
-	
+
+		this.dropPanel = new Seiho.gym.exercise.TrainingWizard.Exercises.DropPanel({
+			region: 'center',
+			margins: '1 1 1 1'
+		})
+
 		this.baseElement = new Ext.Panel({
 			border: false,
 			layout: 'border',
 			bodyStyle: 'background: white', 
 			items: [
-				new Seiho.gym.exercise.TrainingWizard.Exercises.DropPanel({
-					region: 'center',
-					margins: '1 1 1 1'
-				}), new Seiho.gym.exercise.TrainingWizard.Exercises.Toolbox({
+				this.dropPanel, new Seiho.gym.exercise.TrainingWizard.Exercises.Toolbox({
 					region: 'west',
 					width: 150,
 					border: false,
 					margins: '1 1 1 1'
 				})
 			]
-        });
-        Seiho.gym.exercise.TrainingWizard.Exercises.superclass.initComponent.apply( this, arguments );
+		});
+	
+		this.buttonClear = new Ext.Button({
+			disabled: true,
+			text: 'Wyczyść',
+			iconCls: 'icon-world_delete',
+			handler: this.clear,
+			scope: this
+		});
+
+		Ext.apply( this, {
+			fbar: [
+				'->', this.buttonClear, ' '
+			]
+		});
+
+		Seiho.gym.exercise.TrainingWizard.Exercises.superclass.initComponent.apply( this, arguments );
+
+		this.dropPanel.exercises.on( 'clear'  , this.updateButtons, this )
+		this.dropPanel.exercises.on( 'remove' , this.updateButtons, this )
+		this.dropPanel.exercises.on( 'add'    , this.updateButtons, this )
+		this.dropPanel.exercises.on( 'replace', this.updateButtons, this )
     },
 
-    isValid: function () {
-        return false
+	isValid: function () {
+		var items = this.dropPanel.exercises.items;
+		if( items.length == 0 ) return false;
+
+		for( var i = 0, len = items.length; i < len; i++ )
+			if( items[i].series.length == 0 )
+				return false
+
+        return true
     },
 
     getValues: function () {
-        return []
-    }
+        return this.dropPanel.exercises.items;
+	},
+	clear: function() {
+		this.dropPanel.exercises.clear();
+		this.dropPanel.refresh();
+	},
+	updateButtons: function() {
+		this.validate();
+		// ..
+		this.buttonClear.setDisabled( this.dropPanel.exercises.getCount() == 0 )
+	}
 
 });
 //}}}
@@ -351,7 +389,7 @@ Seiho.gym.exercise.TrainingWizard.Exercises.DropPanel = Ext.extend( Ext.Panel, {
 		});
 
 		Seiho.gym.exercise.TrainingWizard.Exercises.DropPanel.superclass.initComponent.apply( this, arguments )
-		
+
 		this.on( 'render', function() {
 			var self = this;
 			this.dropZone = new Ext.dd.DropTarget( this.body.dom, {
@@ -368,9 +406,12 @@ Seiho.gym.exercise.TrainingWizard.Exercises.DropPanel = Ext.extend( Ext.Panel, {
 		this.exercises.add({
 			id: node.attributes.id,
 			text: node.attributes.text,
-			series: []
+			series: [1, 2]
 		});
-
-		this.tpl.overwrite( this.body, this.exercises.items )
+		
+		this.refresh()
+	},
+	refresh: function() {
+		this.tpl.overwrite( this.body, this.exercises.items )	
 	}
 })
