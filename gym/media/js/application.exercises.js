@@ -146,7 +146,7 @@ Seiho.gym.exercise.MainPanel = Ext.extend( Ext.grid.GridPanel, {
             	form.prevPanelAction, form.nextPanelAction, {
                 	text: 'Zapisz',
 	                iconCls: 'icon-save',
-    	            //handler: this.saveTerm.createDelegate( this )
+    	            handler: this.saveTraining.createDelegate( this )
 	            },
     	        {
         	        text: 'Anuluj',
@@ -161,6 +161,30 @@ Seiho.gym.exercise.MainPanel = Ext.extend( Ext.grid.GridPanel, {
 	},
 	deleteExercise: function() {
 		// TODO implementacja
+	},
+	saveTraining: function( withoutConfirm ) {
+		var form = this.window.form;		
+		if( withoutConfirm == true ) {
+			//this.window.getEl().mask( 'Trwa przesyłanie danych na serwer, <b>Jak byś tyle nie cisnął to by to trwało szybciej</b> ...', 'x-mask-loading' );
+		   	django.exercises.save( Ext.util.JSON.encode( form.getValues() ), function( e ) {
+		   		console.log( e )
+		   	});
+			return false;
+		}
+
+		Ext.Msg.show({
+			title  : 'Zapis treningu',
+			icon   : Ext.MessageBox.QUESTION,
+			msg    : 'Czy na pewno chcesz zapisać ten trening ?',
+			buttons: Ext.Msg.YESNO,
+			fn     : function( btn ){
+				if( btn == 'yes' ) {
+					// sleep a litle to wait for close this confirm window
+					this.saveTraining.defer( 1, this, [true] );
+				}
+			},			
+			scope  : this
+		});
 	}
 });
 
@@ -303,40 +327,37 @@ Seiho.gym.exercise.TrainingWizard.Exercises = Ext.extend( Seiho.wizard.Item, { /
 		});
 
 		Seiho.gym.exercise.TrainingWizard.Exercises.superclass.initComponent.apply( this, arguments );
-		/*
-		this.dropPanel.exercises.on( 'clear'  , this.updateButtons, this )
-		this.dropPanel.exercises.on( 'remove' , this.updateButtons, this )
-		this.dropPanel.exercises.on( 'add'    , this.updateButtons, this )
-		this.dropPanel.exercises.on( 'replace', this.updateButtons, this )
-		*/
+		
+		this.dropPanel.store.on( 'update', this.updateButtons, this )
+		this.dropPanel.store.on( 'remove', this.updateButtons, this )
+		this.dropPanel.store.on( 'add'   , this.updateButtons, this )
     },
 
-	isValid: function () {
-		/*
-		var items = this.dropPanel.exercises.items;
+	isValid: function () {		
+		var items = this.dropPanel.store.data.items;
 		if( items.length == 0 ) return false;
-
 		for( var i = 0, len = items.length; i < len; i++ )
-			if( items[i].series.length == 0 )
+			if( items[i].data.series.length == 0 )
 				return false
 
 		return true
-		*/
-	   return false
     },
 
-    getValues: function () {
-		//return this.dropPanel.exercises.items;
-		return []
+	getValues: function () {
+		var r = []
+		this.dropPanel.store.each( function( item ) {
+			r.push( item.data )
+		});
+
+		return r;
 	},
 	clear: function() {
-		//this.dropPanel.exercises.clear();
-		//this.dropPanel.refresh();
+		this.dropPanel.store.removeAll();
 	},
 	updateButtons: function() {
 		this.validate();
 		// ..
-		//this.buttonClear.setDisabled( this.dropPanel.exercises.getCount() == 0 )
+		this.buttonClear.setDisabled( this.dropPanel.store.getCount() == 0 )
 	}
 
 });
@@ -379,10 +400,10 @@ Seiho.gym.exercise.TrainingWizard.Exercises.DropPanel = Ext.extend( Ext.Panel, {
 	tpl: new Ext.XTemplate(
 		'<tpl for=".">',
 			'<div class="exercise round-corners" style="margin: 5px; background: #eee; padding: 2px;height: 50px; -moz-box-shadow: 2px 2px 2px #ccc;">',
-				'<div class="exercise-name" style="padding: 2px; font-weight: bold; color: white; font-size:1.3em; text-shadow: 2px 2px 2px #888;">{[xindex]}. {text}</div>',
+				'<div class="exercise-name" style="padding: 2px; font-weight: bold; color: white; font-size:1.3em; text-shadow: 2px 2px 2px #888;">{text}</div>',
 				'<div class="exercise-series">',
 					'<tpl for="series">',
-						'<div class="set round-corners"><span class="number round-corners">{[xindex]}</span>5 x 100m</div>',
+						'<div class="set round-corners"><span class="number round-corners">{[xindex]}</span>{text}</div>',
 					'</tpl>',
 				'</div>',
 			'</div>',
@@ -402,13 +423,7 @@ Seiho.gym.exercise.TrainingWizard.Exercises.DropPanel = Ext.extend( Ext.Panel, {
 				},
 				this.record
 			)
-		})
-
-		/*
-		this.exercises = new Ext.util.MixedCollection( false, function( e ) {
-			return e.id
 		});
-		*/
 
 	   Ext.apply( this, {
 		   layout: 'fit',
@@ -416,17 +431,13 @@ Seiho.gym.exercise.TrainingWizard.Exercises.DropPanel = Ext.extend( Ext.Panel, {
 		   store: this.store,
 		   tpl: this.tpl,
 		   autoHeight: true,
-		   emptyText: 'Ni ma chuja ...',
+		   emptyText: '<div class="empty-text" style="text-align: center; color: #999999; margin-top: 10px; padding: 3px; font-size: 1.2em;">Brak ćwiczeń, dodaj ćwiczenie przeciągając je z panelu po lewej stronie</div>',
 		   itemSelector: 'div.exercise'
 		})
 	   })
 
 		Seiho.gym.exercise.TrainingWizard.Exercises.DropPanel.superclass.initComponent.apply( this, arguments )
 
-		this.store.loadData([
-			[1, 'test', [1, 2] ]	
-		])
-		
 		this.on( 'render', function() {
 			var self = this;
 			this.dropZone = new Ext.dd.DropTarget( this.body.dom, {
@@ -440,26 +451,182 @@ Seiho.gym.exercise.TrainingWizard.Exercises.DropPanel = Ext.extend( Ext.Panel, {
 		}, this )
 
 		this.dataView.on( 'click', this.onNodeClick, this );
+		this.dataView.on( 'contextmenu', this.onNodeContextMenu, this );
 		
 	},
 	
 	addExercise: function( node ) {
+		var record = new this.record(
+			{ 
+				id: node.attributes.id, 
+			  	text: node.attributes.text, 
+				series: []
+		  	}
+		);
+		
 		this.store.add( 
-			new this.record(
-				{ id: node.attributes.id, 
-				  text: node.attributes.text, 
-				  series: [1, 2]
-			  }
-			)
-		)
+			record
+		);
+
+		this.addSerie( record );
 	},
-
-	refresh: function() {
-
-	},
-
 	onNodeClick: function( dv, index, node, e ) {
 		var record = dv.getRecord( node );
-		alert( record.get( "text" ) )
+		// ..
+	},
+	onNodeContextMenu: function( dv, index, node, e ) {
+		var record = dv.getRecord( node );
+
+		e.preventDefault();
+
+		var items = [
+			{ text: 'dodaj serię', iconCls: 'icon-page_white_add', handler: this.addSerie.createDelegate( this, [record] ) },
+		];
+
+		if( record.get( 'series' ).length > 0 ) {
+			var menu = [];
+			Ext.each( record.get( 'series' ), function( item, serieIdx ) {
+				menu.push(					
+					{ text: item.text , iconCls: 'icon-page_white', handler: this.removeSerie.createDelegate( this, [record, serieIdx ] ) }
+				);
+			}, this ); 
+
+			items.push(
+				{ text: 'usuń serię', iconCls: 'icon-page_white_delete', menu: menu }
+			);
+		}
+
+		items.push( 
+			[
+				'-', { text: 'usuń to ćwiczenie', iconCls: 'icon-cross', handler: this.removeExercise.createDelegate( this, [record] ) }
+			]
+		);
+
+		var menu = new Ext.menu.Menu({
+			items: items	
+		});
+
+		menu.showAt( e.getXY() )	
+	},
+	removeExercise: function( record ) {
+		this.store.remove( record );
+	},
+	addSerie: function( record ) {
+		if ( this.window != undefined ) {
+            this.window.toFront();
+			this.window.getEl().frame();
+
+            return false;
+		}
+		
+		this.window = new Seiho.gym.exercise.TrainingWizard.Exercises.SerieForm().getWindow({
+			title: 'Nowa Seria',
+			iconCls: 'icon-page_white',
+            listeners: {
+                close: {
+                    fn: function () {
+                        this.window = undefined;
+                    },
+                    scope: this
+                }
+			},
+			buttons: 
+				[
+					{
+						text   : 'Zapisz',
+						iconCls: 'icon-save',
+						handler: function() {
+							var form = this.window.form.getForm();
+							if( !form.isValid() ) {
+								return false;
+							}
+							var values = form.getValues()
+							var reps = values.reps;
+							var mass = values.mass;
+							var distance = values.distance;
+							var time = values.time;
+
+							var text = ( reps > 0 ? '<span class="biggest">' + reps + '</span> powtórzeń' : '' ) + ( mass > 0 ? ' x <span class="biggest">' + mass + '</span> kg ' : '' ) + ( distance > 0 ? ' <span class="biggest">' + distance + '</span> m' : '' ) + ( time != '00:00:00' ? ' <span class="biggest">' + time + '</span>' : '' )
+
+							var series = record.get( 'series' );
+							series.push( 
+								{
+									text: text,
+									reps: reps,
+									mass: mass,
+									distance: distance,
+									time: time
+								}
+							);
+							
+							record.set( 'series', series );
+							this.store.fireEvent( 'update', this.store, record, Ext.data.Record.EDIT );
+
+							this.window.close();
+						},
+						scope  : this
+					}, {
+						text   : 'Anuluj',
+						iconCls: 'icon-cross',
+						handler: function() {
+							this.window.close()
+						},
+						scope  : this						
+					}
+				]
+		});
+
+		this.window.show();		
+	},
+	removeSerie: function( record, serieIdx ) {
+		var series = record.get( 'series' );
+
+		series.splice( serieIdx, 1 );
+
+		record.set( 'series', series );
+		this.store.fireEvent( 'update', this.store, record, Ext.data.Record.EDIT );
 	}
-})
+});
+
+Seiho.gym.exercise.TrainingWizard.Exercises.SerieForm = Ext.extend( Ext.form.FormPanel, {
+	autoScroll   : false,
+	border       : false,
+	initComponent: function() {//{{{
+		Ext.apply( this, {
+			bodyStyle: 'padding: 10px',
+			initialConfig: {
+				waitMsgTarget: true
+			},
+			items: [
+				{ 
+					xtype: 'fieldset',
+					title: 'Osiągnięcia w serii',
+					items: [
+						{ xtype: 'numberfield', fieldLabel: 'Powtórzenia', name: 'reps', allowDecimal: false },
+						{ xtype: 'numberfield', fieldLabel: 'Ciężar', name: 'mass' },
+						{ xtype: 'numberfield', fieldLabel: 'Odległość', name: 'distance' },
+						{ xtype: 'textfield', fieldLabel: 'Czas', name: 'time' }
+					]
+				}
+			]
+		});
+		Seiho.gym.exercise.TrainingWizard.Exercises.SerieForm.superclass.initComponent.apply( this, arguments );
+	},
+	//}}}
+	getWindow: function( c ) {//{{{
+		c = c || {};
+		// ..
+		var config = {};
+		Ext.apply( config, c, {
+            width      : 400,
+            height     : 230,
+            layout     : 'fit',
+			items      : this,
+			// ..
+			form       : this
+		})
+
+		return new Ext.Window( config );		
+	}
+	//}}}
+});

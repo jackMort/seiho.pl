@@ -2,6 +2,7 @@ from gym.providers import remote_provider
 from gym.exercises.models import Exercise, ExerciseTemplate, Type
 from extdirect.django import remoting, ExtDirectStore
 from django.core import serializers
+from django.utils import simplejson
 
 @remoting( remote_provider, action='exercises', len=1 )
 def list( request ):
@@ -46,3 +47,18 @@ def tree( request ):
     
     return result
 
+@remoting( remote_provider, action='exercises', len=1 )
+def save( request ):
+    success = False
+    message = "" 
+    
+    data = simplejson.loads( request.extdirect_post_data[0] )
+
+    for exercise in data['exercises']:
+        template = ExerciseTemplate.objects.get( id=exercise['id'] )
+        if template is not None:
+            pass
+        #TODO: reszta tego wszystkiego
+        
+    
+    return dict( success=success, message=message )
