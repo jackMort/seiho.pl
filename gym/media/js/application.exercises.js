@@ -412,7 +412,7 @@ Seiho.gym.exercise.TrainingWizard.Exercises.DropPanel = Ext.extend( Ext.Panel, {
 
 	   Ext.apply( this, {
 		   layout: 'fit',
-		   items: new Ext.DataView({
+		   items: this.dataView = new Ext.DataView({
 		   store: this.store,
 		   tpl: this.tpl,
 		   autoHeight: true,
@@ -438,6 +438,8 @@ Seiho.gym.exercise.TrainingWizard.Exercises.DropPanel = Ext.extend( Ext.Panel, {
 				}
 			})
 		}, this )
+
+		this.dataView.on( 'click', this.onNodeClick, this );
 		
 	},
 	
@@ -454,5 +456,10 @@ Seiho.gym.exercise.TrainingWizard.Exercises.DropPanel = Ext.extend( Ext.Panel, {
 
 	refresh: function() {
 
+	},
+
+	onNodeClick: function( dv, index, node, e ) {
+		var record = dv.getRecord( node );
+		alert( record.get( "text" ) )
 	}
 })
