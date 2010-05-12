@@ -130,7 +130,7 @@ Seiho.gym.exercise.MainPanel = Ext.extend( Ext.grid.GridPanel, {
             // ..
             title: 'Nowy Trening ...',
 			iconCls: 'icon-page_white',
-            maxWidth: 800,
+            maxWidth: 900,
             maxHeight: 500,
             layout: 'fit',
             items: form,
@@ -305,7 +305,7 @@ Seiho.gym.exercise.TrainingWizard.Exercises = Ext.extend( Seiho.wizard.Item, { /
 			items: [
 				this.dropPanel, new Seiho.gym.exercise.TrainingWizard.Exercises.Toolbox({
 					region: 'west',
-					width: 150,
+					width: 300,
 					border: false,
 					margins: '1 1 1 1'
 				})
@@ -395,12 +395,13 @@ Seiho.gym.exercise.TrainingWizard.Exercises.Toolbox = Ext.extend( Ext.tree.TreeP
 Seiho.gym.exercise.TrainingWizard.Exercises.DropPanel = Ext.extend( Ext.Panel, {
 	baseCls: 'canvas',
 	frame: true,
-	autoScroll: true,
 	// TODO: wszystko do css'a
 	tpl: new Ext.XTemplate(
 		'<tpl for=".">',
-			'<div class="exercise round-corners" style="margin: 5px; background: #eee; padding: 2px;height: 50px; -moz-box-shadow: 2px 2px 2px #ccc;">',
-				'<div class="exercise-name" style="padding: 2px; font-weight: bold; color: white; font-size:1.3em; text-shadow: 2px 2px 2px #888;">{text}</div>',
+			'<div class="exercise round-corners" style="margin: 5px; background: #ccd9e8; border: 1px solid #99bbe8; padding: 2px;min-height: 45px; -moz-box-shadow: 2px 2px 2px #ccc;">',
+			'<div class="exercise-del x-tool x-tool-close"></div>',
+			'<div class="exercise-add x-tool x-tool-plus"></div>',
+			'<div class="exercise-name" style="padding: 2px; font-weight: bold; color: #15428b; font: normal 12px tahoma,arial,helvetica,sans-serif;">{text}</div>',
 				'<div class="exercise-series">',
 					'<tpl for="series">',
 						'<div class="set round-corners"><span class="number round-corners">{[xindex]}</span>{text}</div>',
@@ -426,13 +427,13 @@ Seiho.gym.exercise.TrainingWizard.Exercises.DropPanel = Ext.extend( Ext.Panel, {
 		});
 
 	   Ext.apply( this, {
-		   layout: 'fit',
-		   items: this.dataView = new Ext.DataView({
-		   store: this.store,
-		   tpl: this.tpl,
-		   autoHeight: true,
-		   emptyText: '<div class="empty-text" style="text-align: center; color: #999999; margin-top: 10px; padding: 3px; font-size: 1.2em;">Brak ćwiczeń, dodaj ćwiczenie przeciągając je z panelu po lewej stronie</div>',
-		   itemSelector: 'div.exercise'
+		layout: 'fit',
+		items: this.dataView = new Ext.DataView({
+			store: this.store,
+			tpl: this.tpl,
+			autoScroll: true,
+			emptyText: '<div class="empty-text" style="text-align: center; color: #999999; margin-top: 10px; padding: 3px; font-size: 1.2em;">Brak ćwiczeń, dodaj ćwiczenie przeciągając je z panelu po lewej stronie</div>',
+		   	itemSelector: 'div.exercise'
 		})
 	   })
 
@@ -471,42 +472,54 @@ Seiho.gym.exercise.TrainingWizard.Exercises.DropPanel = Ext.extend( Ext.Panel, {
 		this.addSerie( record );
 	},
 	onNodeClick: function( dv, index, node, e ) {
+		e.preventDefault();
+		
 		var record = dv.getRecord( node );
-		// ..
+		if( e.getTarget( '.exercise-del' ) ) {
+			this.removeExercise( record )
+		} else if( e.getTarget( '.exercise-add' ) ) {
+			this.addSerie( record )
+		}  
 	},
 	onNodeContextMenu: function( dv, index, node, e ) {
-		var record = dv.getRecord( node );
-
 		e.preventDefault();
+		
+		var record = dv.getRecord( node );
+		var set = e.getTarget( '.set' );
+		
+		if( set ) {
+			// TODO: menu dla serii
+		} else {
 
-		var items = [
-			{ text: 'dodaj serię', iconCls: 'icon-page_white_add', handler: this.addSerie.createDelegate( this, [record] ) },
-		];
+			var items = [
+				{ text: 'dodaj serię', iconCls: 'icon-page_white_add', handler: this.addSerie.createDelegate( this, [record] ) },
+			];
 
-		if( record.get( 'series' ).length > 0 ) {
-			var menu = [];
-			Ext.each( record.get( 'series' ), function( item, serieIdx ) {
-				menu.push(					
-					{ text: item.text , iconCls: 'icon-page_white', handler: this.removeSerie.createDelegate( this, [record, serieIdx ] ) }
+			if( record.get( 'series' ).length > 0 ) {
+				var menu = [];
+				Ext.each( record.get( 'series' ), function( item, serieIdx ) {
+					menu.push(					
+						{ text: item.text , iconCls: 'icon-page_white', handler: this.removeSerie.createDelegate( this, [record, serieIdx ] ) }
+					);
+				}, this ); 
+
+				items.push(
+					{ text: 'usuń serię', iconCls: 'icon-page_white_delete', menu: menu }
 				);
-			}, this ); 
+			}
 
-			items.push(
-				{ text: 'usuń serię', iconCls: 'icon-page_white_delete', menu: menu }
+			items.push( 
+				[
+					'-', { text: 'usuń to ćwiczenie', iconCls: 'icon-cross', handler: this.removeExercise.createDelegate( this, [record] ) }
+				]
 			);
+
+			var menu = new Ext.menu.Menu({
+				items: items	
+			});
+
+			menu.showAt( e.getXY() )
 		}
-
-		items.push( 
-			[
-				'-', { text: 'usuń to ćwiczenie', iconCls: 'icon-cross', handler: this.removeExercise.createDelegate( this, [record] ) }
-			]
-		);
-
-		var menu = new Ext.menu.Menu({
-			items: items	
-		});
-
-		menu.showAt( e.getXY() )	
 	},
 	removeExercise: function( record ) {
 		this.store.remove( record );
