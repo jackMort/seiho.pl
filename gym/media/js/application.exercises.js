@@ -165,10 +165,14 @@ Seiho.gym.exercise.MainPanel = Ext.extend( Ext.grid.GridPanel, {
 	saveTraining: function( withoutConfirm ) {
 		var form = this.window.form;		
 		if( withoutConfirm == true ) {
-			//this.window.getEl().mask( 'Trwa przesyłanie danych na serwer, <b>Jak byś tyle nie cisnął to by to trwało szybciej</b> ...', 'x-mask-loading' );
+			this.window.getEl().mask( 'Trwa przesyłanie danych na serwer, <b>Jak byś tyle nie cisnął to by to trwało szybciej</b> ...', 'x-mask-loading' );
+
 		   	django.exercises.save( Ext.util.JSON.encode( form.getValues() ), function( e ) {
-		   		console.log( e )
-		   	});
+				this.window.getEl().unmask();
+		   		if( !e.result.success ) {
+					// TODO: nie zapisuj
+				}
+		   	}, this );
 			return false;
 		}
 
