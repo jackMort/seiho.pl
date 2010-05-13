@@ -30,7 +30,7 @@ def tree( request ):
                 {
                     'id': e.id,
                     'text': e.name,
-                    'leaf': True
+                    'leaf': True, 'qtip': e.description
                 }
             )
 
