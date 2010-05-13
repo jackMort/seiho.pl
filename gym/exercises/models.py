@@ -41,7 +41,7 @@ class Exercise( models.Model ):
     sets = models.ManyToManyField( Set )
     
     def __str__( self ):
-	return "%s [%d]" % ( self.template.name, len( self.sets.all() ) )
+        return "%s [%d]" % ( self.template.name, len( self.sets.all() ) )
 
 class Training( models.Model ):
     user = models.ForeignKey( User )

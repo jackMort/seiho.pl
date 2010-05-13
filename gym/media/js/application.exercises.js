@@ -70,7 +70,7 @@ Seiho.gym.exercise.MainPanel = Ext.extend( Ext.grid.GridPanel, {
 							var number = sets[i].fields.number;
 							var distance = sets[i].fields.distance;
 	
-							var info = ( reps > 0 ? '<span class="biggest">' + reps + '</span> powtórzeń' : '' ) + ( mass > 0 ? ' x <span class="biggest">' + mass + '</span> kg ' : '' ) + ( distance > 0 ? ' <span class="biggest">' + distance + '</span> m' : '' ) + ( time != '00:00:00' ? ' <span class="biggest">' + time + '</span>' : '' )
+							var info = ( reps > 0 ? '<span class="biggest">' + reps + '</span> powtórzeń' : '' ) + ( mass > 0 ? ' x <span class="biggest">' + mass + '</span> kg ' : '' ) + ( distance > 0 ? ' <span class="biggest">' + distance + '</span> m' : '' ) + ( time != null ? ' <span class="biggest">' + time + '</span>' : '' )
 	
 							items += '<div class="set round-corners"><span class="number round-corners">' + number + '</span> ' + info + '</div>'
 						}
@@ -169,9 +169,14 @@ Seiho.gym.exercise.MainPanel = Ext.extend( Ext.grid.GridPanel, {
 
 		   	django.exercises.save( Ext.util.JSON.encode( form.getValues() ), function( e ) {
 				this.window.getEl().unmask();
-		   		if( !e.result.success ) {
-					// TODO: nie zapisuj
+		   		if( e.success ) {
+					this.window.close()	
+					this.store.reload();
+
+				} else {
+					Ext.Msg.alert( 'Wystąpił błąd', 'Co tu dużo mówić, <b>Narobiłeś wielką kupę i sam ją teraz sprzątniesz ...</b>' )
 				}
+
 		   	}, this );
 			return false;
 		}

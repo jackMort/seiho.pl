@@ -1,5 +1,5 @@
 from gym.providers import remote_provider
-from gym.exercises.models import Exercise, ExerciseTemplate, Type
+from gym.exercises.models import *
 from extdirect.django import remoting, ExtDirectStore
 from django.core import serializers
 from django.utils import simplejson
@@ -53,12 +53,35 @@ def save( request ):
     message = "" 
     
     data = simplejson.loads( request.extdirect_post_data[0] )
-
-    for exercise in data['exercises']:
-        template = ExerciseTemplate.objects.get( id=exercise['id'] )
-        if template is not None:
-            pass
-        #TODO: reszta tego wszystkiego
-        
+    base_info = data['base_info']
     
-    return dict( success=success, message=message )
+    treining = Training( user=request.user, date="%s 00:00:00" % base_info['date'], description=base_info['description'] )
+    treining.save()
+
+    for ex in data['exercises']:
+        template = ExerciseTemplate.objects.get( id=ex['id'] )
+        if template is not None:
+            exercise = Exercise( template=template )
+            exercise.save()
+
+            sr_id = 1;
+            for sr in ex['series']:
+                if len( sr['reps'] ) == 0:
+                    sr['reps'] = None
+
+                if len( sr['mass'] ) == 0:
+                    sr['mass'] = None
+
+                if len( sr['distance'] ) == 0:
+                    sr['distance'] = None
+
+                if len( sr['time'] ) == 0:
+                    sr['time'] = None
+
+
+                exercise.sets.add( Set.objects.create( number=sr_id, reps=sr['reps'], mass=sr['mass'], distance=sr['distance'], time=sr['time'] ) )
+                sr_id =+ 1
+            
+            treining.exercises.add( exercise )
+        
+    return dict( success=True, message=message )
